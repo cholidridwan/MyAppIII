@@ -6,8 +6,41 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:id="@+id/canvas"
     tools:context="com.edgeasia.tes04.MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/canvas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></RelativeLayout>
+
+    <EditText
+        android:gravity="center"
+        android:padding="20dp"
+        android:inputType="number"
+        android:textColor="#fff"
+        android:background="@color/colorPrimary"
+        android:id="@+id/txtDestination"
+        android:layout_width="match_parent"
+        android:layout_height="200px" />
+    <Button
+        android:id="@+id/btnSave"
+        android:text="save layout"
+        android:layout_marginTop="250px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnClear"
+        android:text="clear layout"
+        android:layout_marginTop="400px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnLoad"
+        android:text="load layout"
+        android:layout_marginTop="550px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

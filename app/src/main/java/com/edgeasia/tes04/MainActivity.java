@@ -1,6 +1,5 @@
 package com.edgeasia.tes04;
 
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,20 +7,37 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
     private int click = 0;
     private int btnId = 0;
     private RelativeLayout canvas;
+    private EditText txtDestination;
+    private Button btnSave;
+    private Button btnLoad;
+    private Button btnClear;
     private int xpos;
     private int ypos;
+    private JSONObject parentJson = new JSONObject();
+    private JSONObject childJson;// = new JSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btnSave = (Button)findViewById(R.id.btnSave);
+        btnLoad = (Button)findViewById(R.id.btnLoad);
+        btnClear = (Button)findViewById(R.id.btnClear);
+        txtDestination = (EditText)findViewById(R.id.txtDestination);
         canvas = (RelativeLayout)findViewById(R.id.canvas);
         canvas.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -55,12 +71,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
     private void createButton(){
-        btnId++;
+        btnId = Integer.parseInt(txtDestination.getText().toString());
         final Button btnTag = new Button(getApplicationContext());
-        btnTag.setText("Button" + String.valueOf(btnId));
+        btnTag.setText("Button " + btnId);
         btnTag.setId(btnId);
         btnTag.setOnClickListener(new View.OnClickListener() {
 
@@ -74,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
                 RelativeLayout.LayoutParams.WRAP_CONTENT)
         );
 
-
         btnTag.post(new Runnable() {
             @Override
             public void run() {
@@ -83,5 +99,51 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("x-y poss", String.valueOf(btnTag.getX()) +","+String.valueOf(btnTag.getY()));
             }
         });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    editJson(String.valueOf(btnTag.getText()), btnId, btnTag.getX(), btnTag.getY(), btnTag.getWidth(), btnTag.getHeight());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvas.removeAllViews();
+            }
+        });
+
+        btnLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+    }
+
+    private void editJson(String btnName, int destination, float posx, float posy, int btnWidth, int btnHeight) throws JSONException {
+        try {
+            childJson = new JSONObject();
+            childJson.put("name", btnName);
+            childJson.put("destination", destination);
+            childJson.put("posx", posx);
+            childJson.put("posy", posy);
+            childJson.put("width", btnWidth);
+            childJson.put("height", btnHeight);
+
+            parentJson.put(String.valueOf(btnName), childJson);
+            String jsonStr = parentJson.toString();
+            System.out.println("jsonString: "+ jsonStr);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
