@@ -1,10 +1,12 @@
 package com.edgeasia.tes04;
 
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,15 +26,24 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSave;
     private Button btnLoad;
     private Button btnClear;
+    private Button btnTag;
     private int xpos;
     private int ypos;
     private JSONObject parentJson = new JSONObject();
     private JSONObject childJson;// = new JSONObject();
 
+    private ScaleGestureDetector SGD;
+    private float scale = 1f;
+    private int width = 264;
+    private int height = 144;
+    private boolean active = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SGD = new ScaleGestureDetector(this,new ScaleListener());
 
         btnSave = (Button)findViewById(R.id.btnSave);
         btnLoad = (Button)findViewById(R.id.btnLoad);
@@ -74,18 +85,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            scale *= detector.getScaleFactor();
+            scale = Math.max(0.1f, Math.min(scale, 5.0f));
+
+            if(active) {
+                btnTag.setWidth((int) (width * scale));
+                btnTag.setHeight((int) (height * scale));
+                //Log.i("scale", String.valueOf(btnTag.getWidth()) + ", " + String.valueOf(btnTag.getHeight()));
+            }
+            return true;
+        }
+    }
+
     private void createButton(){
         btnId = Integer.parseInt(txtDestination.getText().toString());
-        final Button btnTag = new Button(getApplicationContext());
+        //final Button btnTag = new Button(getApplicationContext());
+        btnTag = new Button(getApplicationContext());
         btnTag.setText("Button " + btnId);
         btnTag.setId(btnId);
-        btnTag.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Log.i("button number", String.valueOf(v.getId()));
-            }
-        });
         canvas.addView(btnTag, new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT)
@@ -123,6 +143,58 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        canvas.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                SGD.onTouchEvent(event);
+                return true;
+            }
+        });
+
+        btnTag.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(!active){
+                    xpos = (int) event.getRawX();
+                    ypos = (int) event.getRawY();
+                    btnTag.setX(xpos - btnTag.getWidth()/2);
+                    btnTag.setY(ypos - btnTag.getHeight()*2);
+                }
+                return false;
+            }
+        });
+
+        btnTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                click++;
+                Log.i("button number", String.valueOf(v.getId()));
+                Handler handler = new Handler();
+                Runnable r = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        click = 0;
+                    }
+                };
+
+                if (click == 1) {
+                    //Single click
+                    handler.postDelayed(r, 250);
+                } else if (click == 2) {
+                    //Double click
+                    click = 0;
+                    if(!active){
+                        btnTag.setBackgroundColor(Color.GRAY);
+                        active = true;
+                    }else {
+                        btnTag.setBackgroundResource(android.R.drawable.btn_default);
+                        active = false;
+                    }
+                }
             }
         });
 
