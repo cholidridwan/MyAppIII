@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         canvas.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                SGD.onTouchEvent(event);
                 switch (event.getAction()){
                     case MotionEvent.ACTION_UP:
                         click++;
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         });
 
@@ -146,22 +148,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        canvas.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                SGD.onTouchEvent(event);
-                return true;
-            }
-        });
-
         btnTag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(!active){
                     xpos = (int) event.getRawX();
                     ypos = (int) event.getRawY();
-                    btnTag.setX(xpos - btnTag.getWidth()/2);
-                    btnTag.setY(ypos - btnTag.getHeight()*2);
+                    v.setX(xpos - btnTag.getWidth()/2);
+                    v.setY(ypos - btnTag.getHeight()*2);
                 }
                 return false;
             }
