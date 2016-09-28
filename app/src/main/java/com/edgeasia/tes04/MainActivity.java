@@ -117,10 +117,16 @@ public class MainActivity extends AppCompatActivity {
                 btnTag.setX(xpos - btnTag.getWidth()/2);
                 btnTag.setY(ypos - btnTag.getHeight() * 2);
                 Log.i("x-y poss", String.valueOf(btnTag.getX()) +","+String.valueOf(btnTag.getY()));
+
+                try {
+                    editJson(String.valueOf(btnTag.getText()), btnId, btnTag.getX(), btnTag.getY(), btnTag.getWidth(), btnTag.getHeight());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        /*btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -130,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-        });
-
+        });*/
 
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +155,15 @@ public class MainActivity extends AppCompatActivity {
         btnTag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_UP:
+                        try {
+                            editJson(String.valueOf(btnTag.getText()), btnId, v.getX(), v.getY(), v.getWidth(), v.getHeight());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
                 if(!active){
                     xpos = (int) event.getRawX();
                     ypos = (int) event.getRawY();
