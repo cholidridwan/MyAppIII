@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_UP:
                         try {
-                            editJson(String.valueOf("Button " + v.getId()), btnId, v.getX(), v.getY(), v.getWidth(), v.getHeight());
+                            editJson(String.valueOf("Button " + v.getId()), v.getId(), v.getX(), v.getY(), v.getWidth(), v.getHeight());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
