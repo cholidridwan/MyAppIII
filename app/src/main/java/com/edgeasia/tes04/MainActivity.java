@@ -10,10 +10,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         if (click == 1) {
                             //Single click
                             handler.postDelayed(r, 250);
-                        } else if (click == 2) {
+                        } else if (click == 2 && !txtDestination.getText().toString().matches("")) {
                             //Double click
                             click = 0;
                             xpos = (int) event.getRawX();
@@ -103,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createButton(){
         btnId = Integer.parseInt(txtDestination.getText().toString());
+        txtDestination.setText("");
         //final Button btnTag = new Button(getApplicationContext());
         btnTag = new Button(getApplicationContext());
         btnTag.setText("Button " + btnId);
