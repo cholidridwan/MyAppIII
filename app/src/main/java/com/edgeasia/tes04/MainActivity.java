@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private int width = 264;
     private int height = 144;
     private boolean active = false;
+    private View btnActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +92,7 @@ public class MainActivity extends AppCompatActivity {
             scale = Math.max(0.1f, Math.min(scale, 5.0f));
 
             if(active) {
-                btnTag.setWidth((int) (width * scale));
-                btnTag.setHeight((int) (height * scale));
+                btnActive.setLayoutParams(new RelativeLayout.LayoutParams((int) (width * scale), (int) (height * scale)));
                 //Log.i("scale", String.valueOf(btnTag.getWidth()) + ", " + String.valueOf(btnTag.getHeight()));
             }
             return true;
@@ -126,18 +126,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    editJson(String.valueOf(btnTag.getText()), btnId, btnTag.getX(), btnTag.getY(), btnTag.getWidth(), btnTag.getHeight());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });*/
-
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,6 +150,35 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+                        click++;
+                        Log.i("button number", String.valueOf(v.getId()));
+                        Handler handler = new Handler();
+                        Runnable r = new Runnable() {
+
+                            @Override
+                            public void run() {
+                                click = 0;
+                            }
+                        };
+
+                        if (click == 1) {
+                            //Single click
+                            handler.postDelayed(r, 250);
+                        } else if (click == 2) {
+                            //Double click
+                            click = 0;
+                            if(!active){
+                                btnActive = v;
+                                btnActive.setBackgroundColor(Color.GRAY);
+                                active = true;
+                            }else {
+                                btnActive = v;
+                                btnActive.setBackgroundResource(android.R.drawable.btn_default);
+                                active = false;
+                            }
+                        }
+
                         break;
                 }
                 if(!active){
@@ -173,38 +190,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        btnTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                click++;
-                Log.i("button number", String.valueOf(v.getId()));
-                Handler handler = new Handler();
-                Runnable r = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        click = 0;
-                    }
-                };
-
-                if (click == 1) {
-                    //Single click
-                    handler.postDelayed(r, 250);
-                } else if (click == 2) {
-                    //Double click
-                    click = 0;
-                    if(!active){
-                        btnTag.setBackgroundColor(Color.GRAY);
-                        active = true;
-                    }else {
-                        btnTag.setBackgroundResource(android.R.drawable.btn_default);
-                        active = false;
-                    }
-                }
-            }
-        });
-
     }
 
     private void editJson(String btnName, int destination, float posx, float posy, int btnWidth, int btnHeight) throws JSONException {
